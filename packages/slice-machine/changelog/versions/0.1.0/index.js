@@ -49,7 +49,7 @@ function moveStories(cwd, libraryName, sliceName) {
   if(!customStories)  return
 
   Files.remove(customStoriesPath)
-  storybook.generateStories(path.join(__dirname, "../../../"), detectFramework(cwd), cwd, libraryName, sliceName)
+  storybook.generateStories(detectFramework(cwd), cwd, libraryName, sliceName)
 }
 
 function migrateSlice(cwd, libraryName, sliceName) {

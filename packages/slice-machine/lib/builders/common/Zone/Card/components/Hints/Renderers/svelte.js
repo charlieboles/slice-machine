@@ -29,7 +29,7 @@ const codeByWidgetType = (Widgets) => ({
   [Widgets.Color?.TYPE_NAME]: (fieldText) => `<span style={\`color: \${${fieldText}};\`}}>Some Text</span>`,
 })
 
-export default ({ Widgets, item, typeName, renderHintBase, isRepeatable }) => {
+const toSvelte = ({ Widgets, item, typeName, renderHintBase, isRepeatable }) => {
   const hintBase = renderHintBase({ item })
   const maybeCodeRenderer = codeByWidgetType(Widgets)[typeName]
   const code = maybeCodeRenderer ? maybeCodeRenderer(hintBase) : null
@@ -37,3 +37,5 @@ export default ({ Widgets, item, typeName, renderHintBase, isRepeatable }) => {
 
   return <CodeBlock className="language-html">{withRepeat}</CodeBlock>
 }
+
+export default toSvelte

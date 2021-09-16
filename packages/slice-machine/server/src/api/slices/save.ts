@@ -62,8 +62,7 @@ export async function handler(
   }
 
   console.log('[slice/save]: Generating stories')
-  Storybook.generateStories(appRoot, env.framework, env.cwd, from, sliceName)
-  
+  Storybook.generateStories(env.framework, env.cwd, from, sliceName)
 
   let warning: string | null = null
   let previewUrls: { [variationId: string]: Preview } = {}

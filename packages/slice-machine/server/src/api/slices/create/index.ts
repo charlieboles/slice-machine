@@ -53,7 +53,8 @@ const copyTemplate = async (env: Environment, templatePath: string, from: string
 }
 
 const fromTemplate = async (env: Environment, from: string, sliceName: string) => {
-  const templatePath = path.join(appRoot, 'templates', 'slice', env.framework)
+  const templatePath = path.resolve(__dirname, `../../templates/slice/${env.framework}`)
+
   if (!Files.isDirectory(templatePath)) {
     const message = `[create] Framework "${env.framework}" is not supported. (${templatePath}).`
     console.error(message)
@@ -63,6 +64,7 @@ const fromTemplate = async (env: Environment, from: string, sliceName: string) =
       reason: message,
     }
   }
+  Files.readString(templatePath)
   return copyTemplate(env, templatePath, from, sliceName)
 }
 
@@ -81,7 +83,7 @@ export default async function handler({ sliceName, from, values }: { sliceName: 
         return maybeError
       }
     }
-  } else { 
+  } else {
     const fileName = IndexFiles[env.framework] || 'index.js'
     const pathToIndexFile = path.join(paths(env.cwd, '').library(from).slice(sliceName).value(), fileName)
     

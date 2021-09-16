@@ -72,7 +72,6 @@ const SlicesIndex = ({ env }: { env: Environment }) => {
     return [...acc, { name: from }]
   }, [])
   const hasConfigLocalLibs = configLocalLibs.length
-  
 
   return (
     <Fragment>

@@ -8,31 +8,30 @@ import { CustomPaths, GeneratedPaths } from '@lib/models/paths'
 import { createStorybookId } from '@lib/utils/str'
 
 const Paths = {
-  nuxtTemplate: (appRoot: string) => path.join(appRoot, 'templates/storybook/nuxt.template.ejs'),
-  nextTemplate: (appRoot: string) => path.join(appRoot, 'templates/storybook/next.template.ejs'),
-  svelteTemplate: (appRoot: string) => path.join(appRoot, 'templates/storybook/svelte.template.ejs'),
-  getTemplate(appRoot: string, framework: Framework) {
+  nuxtTemplate: () => path.resolve(__dirname, './templates/storybook/nuxt.template.ejs'),
+  nextTemplate: () => path.resolve(__dirname, './templates/storybook/next.template.ejs'),
+  svelteTemplate: () => path.resolve(__dirname, './templates/storybook/svelte.template.ejs'),
+  getTemplate(framework: Framework) {
     switch(framework) {
-      case Framework.nuxt: return Paths.nuxtTemplate(appRoot)
-      case Framework.vue: return Paths.nuxtTemplate(appRoot)
-      case Framework.next: return Paths.nextTemplate(appRoot)
-      case Framework.react: return Paths.nextTemplate(appRoot)
-      case Framework.svelte: return Paths.svelteTemplate(appRoot)
-      case Framework.vanillajs: return Paths.nextTemplate(appRoot)
+      case Framework.nuxt: return Paths.nuxtTemplate()
+      case Framework.vue: return Paths.nuxtTemplate()
+      case Framework.next: return Paths.nextTemplate()
+      case Framework.react: return Paths.nextTemplate()
+      case Framework.svelte: return Paths.svelteTemplate()
+      case Framework.vanillajs: return Paths.nextTemplate()
       default: return null
     }
   }
 }
 
 export default {
-  generateStories(appRoot: string, framework: Framework, cwd: string, libraryName: string, sliceName: string): void {
+  generateStories(framework: Framework, cwd: string, libraryName: string, sliceName: string): void {
     if(Files.exists(
       CustomPaths(cwd)
         .library(libraryName)
         .slice(sliceName)
         .stories()
     )) return
-
 
     const generatedMocksPath = GeneratedPaths(cwd)
       .library(libraryName)
@@ -51,8 +50,7 @@ export default {
       console.error(`No mocks available, cannot generate stories`)
       return
     }
-    
-    const templatePath = Paths.getTemplate(appRoot, framework)
+    const templatePath = Paths.getTemplate(framework)
     if(!templatePath) {
       console.error(`We don't support storybook generated stories for ${framework} yet`)
       return
@@ -60,7 +58,7 @@ export default {
     
     const template = Files.readString(templatePath)
 
-    const withPascalizedIds = (mocks.value || []).map((m: any) => {
+    const withPascalizedIds = (mocks.value || []).map((m: any) => {
       // use underscore to prevent invalid variable names
       const id = createStorybookId(m.variation || m.name)
       return {
