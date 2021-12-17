@@ -17,7 +17,7 @@ import {
   take,
   delay,
 } from "redux-saga/effects";
-import { checkPreviewSetup } from "@src/apiClient";
+import { checkPreviewSetup, sendTrackingReview } from "@src/apiClient";
 import { getFramework } from "@src/modules/environment";
 import { Frameworks } from "@slicemachine/core/build/src/models";
 import { withLoader } from "@src/modules/loading";

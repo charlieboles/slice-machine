@@ -54,10 +54,6 @@ const useSliceMachineActions = () => {
     dispatch(modalOpenCreator({ modalKey: ModalKeysEnum.UPDATE_VERSION }));
 
   // Loading store
-  const startLoadingReview = () =>
-    dispatch(startLoadingActionCreator({ loadingKey: LoadingKeysEnum.REVIEW }));
-  const stopLoadingReview = () =>
-    dispatch(stopLoadingActionCreator({ loadingKey: LoadingKeysEnum.REVIEW }));
   const startLoadingLogin = () =>
     dispatch(startLoadingActionCreator({ loadingKey: LoadingKeysEnum.LOGIN }));
   const stopLoadingLogin = () =>
@@ -65,7 +61,13 @@ const useSliceMachineActions = () => {
 
   // UserContext Store
   const skipReview = () => dispatch(skipReviewCreator());
-  const sendAReview = () => dispatch(sendAReviewCreator());
+  const sendAReview = (rating: number, comment: string) =>
+    dispatch(
+      sendAReviewCreator.request({
+        rating,
+        comment,
+      })
+    );
   const finishOnboarding = () => dispatch(finishOnboardingCreator());
   const getEnvironment = (serverState: ServerState | undefined) => {
     if (!serverState) return;
@@ -92,8 +94,6 @@ const useSliceMachineActions = () => {
     closeLoginModal,
     startLoadingLogin,
     stopLoadingLogin,
-    stopLoadingReview,
-    startLoadingReview,
     sendAReview,
     skipReview,
     closeUpdateVersionModal,

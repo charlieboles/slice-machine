@@ -77,13 +77,7 @@ const ReviewModal: React.FunctionComponent<ReviewModalProps> = () => {
     hasDoneTheOnboarding: userHasDoneTheOnboarding(store),
   }));
 
-  const {
-    skipReview,
-    sendAReview,
-    openLoginModal,
-    startLoadingReview,
-    stopLoadingReview,
-  } = useSliceMachineActions();
+  const { skipReview, sendAReview } = useSliceMachineActions();
 
   const { addToast } = useToasts();
 
@@ -102,24 +96,8 @@ const ReviewModal: React.FunctionComponent<ReviewModalProps> = () => {
 
   const userHasCreateEnoughContent = sliceCount >= 1 && customTypeCount >= 1;
 
-  const onSendAReview = async (
-    rating: number,
-    comment: string
-  ): Promise<void> => {
-    try {
-      startLoadingReview();
-      await sendTrackingReview(rating, comment);
-      sendAReview();
-      stopLoadingReview();
-    } catch (error) {
-      stopLoadingReview();
-      if (403 === error.response?.status) {
-        openLoginModal();
-      }
-      if (401 === error.response?.status) {
-        addToast("You don't have access to the repo", { appearance: "error" });
-      }
-    }
+  const onSendAReview = (rating: number, comment: string): void => {
+    sendAReview(rating, comment);
   };
 
   const validateReview = ({ rating }: { rating: number; comment: string }) => {
