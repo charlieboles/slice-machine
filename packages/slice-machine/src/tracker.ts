@@ -2,10 +2,16 @@ import type { Analytics as ClientAnalytics } from "@segment/analytics-next";
 import { AnalyticsBrowser } from "@segment/analytics-next";
 
 // These events should be sync with the tracking Plan on segment.
-export enum EventType {
+
+type AllSliceMachineEventType = EventType | ContinueOnboardingType;
+
+enum EventType {
   Review = "SliceMachine Review",
   OnboardingStart = "SliceMachine Onboarding Start",
   OnboardingSkip = "SliceMachine Onboarding Skip",
+}
+
+export enum ContinueOnboardingType {
   OnboardingContinueIntro = "SliceMachine Onboarding Continue Screen Intro",
   OnboardingContinueScreen1 = "SliceMachine Onboarding Continue Screen 1",
   OnboardingContinueScreen2 = "SliceMachine Onboarding Continue Screen 2",
@@ -16,7 +22,7 @@ let _client: ClientAnalytics | null = null;
 
 // Track event method
 const _trackEvent = (
-  eventType: EventType,
+  eventType: AllSliceMachineEventType,
   attributes: Record<string, unknown> = {}
 ): void => {
   if (!_client) {
@@ -29,7 +35,7 @@ const _trackEvent = (
     .catch(() => console.warn(`Couldn't report event ${eventType}`));
 };
 
-export const initialize = async (segmentKey: string): Promise<void> => {
+const initialize = async (segmentKey: string): Promise<void> => {
   try {
     // We avoid rewriting a new client if we have already one
     if (!!_client) return;
@@ -39,15 +45,35 @@ export const initialize = async (segmentKey: string): Promise<void> => {
   }
 };
 
-export const trackReview = (
-  framework: string,
-  rating: number,
-  comment: string
-) => {
+const trackReview = (framework: string, rating: number, comment: string) => {
   _trackEvent(EventType.Review, { rating, comment, framework });
+};
+
+const trackOnboardingStart = () => {
+  _trackEvent(EventType.OnboardingStart);
+};
+
+const trackOnboardingContinue = (
+  continueOnboardingEventType: ContinueOnboardingType,
+  onboardingVideoCompleted?: boolean
+) => {
+  _trackEvent(continueOnboardingEventType, { onboardingVideoCompleted });
+};
+
+const trackOnboardingSkip = (
+  screenSkipped: number,
+  onboardingVideoCompleted?: boolean
+) => {
+  _trackEvent(EventType.OnboardingSkip, {
+    screenSkipped,
+    onboardingVideoCompleted,
+  });
 };
 
 export default {
   initialize,
   trackReview,
+  trackOnboardingSkip,
+  trackOnboardingStart,
+  trackOnboardingContinue,
 };
