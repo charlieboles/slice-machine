@@ -9,7 +9,7 @@ import theme from "src/theme";
 
 import LoadingPage from "components/LoadingPage";
 import SliceMachineApp from "components/App";
-import { ClientTracker, TrackerContext } from "src/utils/tracker";
+import Tracker from "@src/tracker";
 
 import "react-tabs/style/react-tabs.css";
 import "rc-drawer/assets/index.css";
@@ -58,21 +58,13 @@ function MyApp({ Component, pageProps }: AppContext & AppInitialProps) {
   const [sliceMap, setSliceMap] = useState<any | null>(null);
 
   const [isLoadingData, setIsLoadingData] = useState(true);
-  const [tracker, setTracker] = useState<ClientTracker | undefined>(undefined);
 
   useEffect(() => {
     if (!serverState) {
       return;
     }
-    serverState.env.repo &&
-      ClientTracker.build(
-        "JfTfmHaATChc4xueS7RcCBsixI71dJIJ",
-        serverState.env.repo
-      )
-        .then((tracker) => setTracker(tracker))
-        .catch(() => {
-          console.log("Cannot initialize tracker.");
-        });
+
+    Tracker.initialize("JfTfmHaATChc4xueS7RcCBsixI71dJIJ");
 
     const newSliceMap = mapSlices(serverState.libraries);
     if (sliceMap !== null) {
@@ -99,11 +91,9 @@ function MyApp({ Component, pageProps }: AppContext & AppInitialProps) {
       </Head>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <TrackerContext.Provider value={tracker}>
-            <SliceMachineApp theme={theme} serverState={serverState}>
-              {isLoadingData ? <LoadingPage /> : <Component {...pageProps} />}
-            </SliceMachineApp>
-          </TrackerContext.Provider>
+          <SliceMachineApp theme={theme} serverState={serverState}>
+            {isLoadingData ? <LoadingPage /> : <Component {...pageProps} />}
+          </SliceMachineApp>
         </PersistGate>
       </Provider>
     </>
