@@ -1,10 +1,13 @@
 import MyComponent from '<%- componentPath %>';
 
 export default {
-  title: '<%- componentTitle %>'
+  title: '<%- componentTitle %>',
+  component: MyComponent
 }
 
 <% mocks.forEach((variation) => { %>
-export const <%- variation.id %> = () => <MyComponent slice={<%- JSON.stringify(variation) %>} />
+const <%- variation.id %>Template = args => <MyComponent slice={<%- JSON.stringify(variation) %>} {...args} />
+export const <%- variation.id %> = <%- variation.id %>Template.bind({});
 <%- variation.id %>.storyName = '<%- variation.name %>'
+<%- variation.id %>.args = {slice: <%- JSON.stringify(variation) %>};
 <% }) %>
